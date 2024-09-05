@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance } from "axios";
 import Options from "@interface/options.interface";
 import Environment from "@enum/api/environment.enum";
 
@@ -40,12 +40,12 @@ class NITROUS {
   /* 
    * @method get
    * @param {string} url - The endpoint to query
-   * @description Performs a GET request to the specified endpoint
+   * @description Performs a GET request and returns the response data only
    */
-  async get(url: string): Promise<AxiosResponse | undefined> {
+  async get(url: string): Promise<any> {
     try {
       const response = await this.axios.get(url);
-      return response;
+      return response.data; // Only return the data from the response
     } catch (error: any) {
       console.error(`[NITROUS] | Error fetching data from ${url}:`, error.message);
       throw new Error(error.message);
@@ -71,12 +71,12 @@ class NITROUS {
   }
 
   /* 
-   * @method getModulesByCategory
+   * @method queryModulesByCategory
    * @param {string} category - The category to query (e.g., 'email', 'domain', etc.)
    * @param {string} query - The query parameter (e.g., 'email@example.com', 'domain.com')
    * @description Queries all modules for a specific category with a given query
    */
-  async getModulesByCategory(category: string, query: string): Promise<any> {
+  async queryModulesByCategory(category: string, query: string): Promise<any> {
     await this.ensureCategoriesLoaded();
 
     if (!this.categories.has(category)) {
@@ -88,16 +88,31 @@ class NITROUS {
   }
 
   /* 
+   * @method getModulesByCategory
+   * @param {string} category - The category to retrieve modules from
+   * @description Fetches and returns the names of all available modules within a specific category
+   */
+  async getModulesByCategory(category: string): Promise<string[]> {
+    await this.ensureCategoriesLoaded();
+
+    const modules = await this.getModules();
+    const categoryModules = modules.find((mod) => mod.category === category);
+    if (!categoryModules) {
+      throw new Error(`[NITROUS] | No modules found for category: ${category}`);
+    }
+
+    return categoryModules.endpoints.map((endpoint) => endpoint.name);
+  }
+
+  /* 
    * @method getModules
    * @description Fetches and returns all available modules across all categories
    */
   async getModules(): Promise<Module[]> {
     const url = "/";
-    const response = await this.get(url);
-    if (response?.data) {
-      this.extractCategories(response.data);
-    }
-    return response?.data || [];
+    const modules = await this.get(url);
+    this.extractCategories(modules);
+    return modules;
   }
 
   /* 
