@@ -1,4 +1,4 @@
-import NITROUS from "nitrous.ts";
+import NITROUS from "../lib/index";
 import Options from "@interface/options.interface";
 
 const options: Options = { env: "production" };

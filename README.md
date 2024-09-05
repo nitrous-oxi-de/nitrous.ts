@@ -1,6 +1,6 @@
  NITROUS OSINT Library
 
-An unofficial Nitrous OSINT API wrapper written in TypeScript using Axios. This library provides an interface for interacting with open-source intelligence modules via the Nitrous OSINT API.
+The official NITROUS OSINT API wrapper written in TypeScript using Axios. This library provides an interface for interacting with open-source intelligence modules via the Nitrous OSINT API.
 
 ## Installation
 
@@ -11,7 +11,7 @@ npm install nitrous.ts
 ## Example Usage
 
 ```typescript
-import NITROUS from 'nitrous.ts';
+import NITROUS from "nitrous.ts";
 
 const nitrous = new NITROUS({ env: 'production' });
 
