@@ -1,4 +1,4 @@
- NITROUS OSINT Library
+# NITROUS OSINT Library
 
 The official NITROUS OSINT API wrapper written in TypeScript using Axios. This library provides an interface for interacting with open-source intelligence modules via the Nitrous OSINT API.
 
@@ -69,4 +69,11 @@ enum Environment {
 
   ```typescript
   await getModulesByCategory(category: string, query: string): Promise<any>;
+  ```
+
+- **Fetch available categories**:  
+  Fetch all unique categories from the API.
+
+  ```typescript
+  await fetchCategories(): Promise<string[]>;
   ```

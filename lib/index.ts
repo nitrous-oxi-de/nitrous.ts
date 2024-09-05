@@ -1,11 +1,17 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+import Options from "@interface/options.interface";
+import Environment from "@enum/api/environment.enum";
 
-import Options                                 from "@interface/options.interface";
-import Environment                             from "@enum/api/environment.enum";
+interface Endpoint {
+  name: string;
+  description: string;
+  route: string;
+  type: string;
+}
 
 interface Module {
   category: string;
-  endpoints: Array<{ description: string; name: string; route: string; type: string }>;
+  endpoints: Endpoint[];
 }
 
 /* 
@@ -18,7 +24,10 @@ class NITROUS {
   private categories: Set<string> = new Set(); 
 
   constructor(options: Options) {
-    this.baseUrl = options.env && options.env in Environment ? Environment[options.env as keyof typeof Environment] : Environment.production;
+    this.baseUrl =
+      options.env && options.env in Environment
+        ? Environment[options.env as keyof typeof Environment]
+        : Environment.production;
 
     this.axios = axios.create({
       baseURL: `https://${this.baseUrl}`,
@@ -82,13 +91,22 @@ class NITROUS {
    * @method getModules
    * @description Fetches and returns all available modules across all categories
    */
-  async getModules(): Promise<any> {
+  async getModules(): Promise<Module[]> {
     const url = "/";
     const response = await this.get(url);
     if (response?.data) {
       this.extractCategories(response.data);
     }
-    return response;
+    return response?.data || [];
+  }
+
+  /* 
+   * @method fetchCategories
+   * @description Fetches and returns all available categories as a string[]
+   */
+  async fetchCategories(): Promise<string[]> {
+    await this.ensureCategoriesLoaded();
+    return Array.from(this.categories);
   }
 
   /* 
