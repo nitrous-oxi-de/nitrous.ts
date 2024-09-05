@@ -54,7 +54,7 @@ enum Environment {
   Fetch all available OSINT modules across all categories.
 
   ```typescript
-  await getModules(): Promise<any>;
+  await getModules(): Promise<Module[]>;
   ```
 
 - **Query a specific module**:  
@@ -65,10 +65,17 @@ enum Environment {
   ```
 
 - **Query all modules in a category**:  
-  Query all modules within a specific category with a given query.
+  Query all modules within a specific category using a query (e.g., an email, domain, etc.).
 
   ```typescript
-  await getModulesByCategory(category: string, query: string): Promise<any>;
+  await queryModulesByCategory(category: string, query: string): Promise<any>;
+  ```
+
+- **Fetch available module names by category**:  
+  Fetch all available module names within a specific category.
+
+  ```typescript
+  await getModulesByCategory(category: string): Promise<string[]>;
   ```
 
 - **Fetch available categories**:  
